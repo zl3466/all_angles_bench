@@ -46,5 +46,6 @@ export PYTHONPATH="/home/ymingli/.local/lib/python3.10/site-packages:$PYTHONPATH
 source /lustre/fsw/portfolios/nvr/users/ymingli/miniconda3/etc/profile.d/conda.sh
 conda activate allanb
 export HF_HUB_CACHE="/lustre/fsw/portfolios/nvr/users/ymingli/cache/huggingface/hub"
+cd "/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit"
 
 torchrun --nproc-per-node=$NUM_GPUS run.py --config "$CONFIG_FILE" --verbose
