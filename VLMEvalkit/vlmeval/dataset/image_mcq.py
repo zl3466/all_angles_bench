@@ -243,7 +243,7 @@ class ImageMCQDataset(ImageBaseDataset):
             model = None
 
         result_file = eval_file.replace(f'.{suffix}', f'_{name_str}_result.pkl')
-
+        print(f"\neval_file: {eval_file}\n")
         data = load(eval_file)
         data = data.sort_values(by='index')
         data['prediction'] = [str(x) for x in data['prediction']]
