@@ -102,7 +102,7 @@ class ImageMCQDataset(ImageBaseDataset):
             'resolve/main/3dsrbench_v1_vlmevalkit_circular.tsv'
         ),
         'All_Angles_Bench':(
-            'All-Angles-Bench/bench_tsv/all_angles_bench_huggingface.tsv'
+            '/lustre/fsw/portfolios/nvr/users/ymingli/datasets/All-Angles-Bench/bench_tsv/all_angles_bench_huggingface.tsv'
         ),
     }
 
