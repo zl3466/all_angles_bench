@@ -902,7 +902,7 @@ qwen2vl_series = {
     ),
     "Qwen2.5-VL-7B-Instruct-tuned": partial(
         Qwen2VLChat,
-        model_path="Qwen/Qwen2.5-VL-7B-Instruct",
+        model_path="/lustre/fs12/portfolios/nvr/projects/nvr_av_end2endav/users/ymingli/projects/playground/models/vlm_odom/7B+grpo/checkpoint-10684",
         min_pixels=1280 * 28 * 28,
         max_pixels=16384 * 28 * 28,
         use_custom_prompt=False,
