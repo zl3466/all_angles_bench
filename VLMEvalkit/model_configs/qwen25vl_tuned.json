@@ -8,7 +8,7 @@
     },
     "data": {
         "All-Angles-Bench": {
-            "class": "AllAnglesBench",
+            "class": "ImageMCQDataset",
             "dataset": "All-Angles-Bench"
         }
     }
