@@ -1,0 +1,15 @@
+{
+    "model": {
+        "MyQwenModel": {
+            "class": "Qwen2VLChat",
+            "model_path": "/lustre/fs12/portfolios/nvr/projects/nvr_av_end2endav/users/ymingli/projects/playground/models/vlm_odom/7B+grpo/checkpoint-10684",
+            "temperature": 0
+        }
+    },
+    "data": {
+        "All-Angles-Bench": {
+            "class": "AllAnglesBench",
+            "dataset": "All-Angles-Bench"
+        }
+    }
+}
