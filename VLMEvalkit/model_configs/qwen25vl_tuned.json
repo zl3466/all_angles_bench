@@ -9,7 +9,7 @@
     "data": {
         "All-Angles-Bench": {
             "class": "ImageMCQDataset",
-            "dataset": "All-Angles-Bench"
+            "dataset": "All_Angles_Bench"
         }
     }
 }
