@@ -100,7 +100,7 @@ class Qwen2VLChat(Qwen2VLPromptMixin, BaseModel):
         self.model_path = model_path
         MODEL_CLS = None  
 
-        if '2.5' in model_path:
+        if '2.5' in model_path or 'checkpoint' in model_path:
             from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
             MODEL_CLS = Qwen2_5_VLForConditionalGeneration
             self.processor = AutoProcessor.from_pretrained(model_path)
