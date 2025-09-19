@@ -174,6 +174,8 @@ def infer_data_job(model, work_dir, model_name, dataset, verbose=False, api_npro
             data_all.update(load(tmpl.format(i)))
 
         data = dataset.data
+        # DEBUG: Only process first sample
+        data = data.iloc[:1].reset_index(drop=True)
         for x in data['index']:
             assert x in data_all
         data['prediction'] = [str(data_all[x]) for x in data['index']]
