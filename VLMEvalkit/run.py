@@ -201,13 +201,11 @@ def main():
         
         # Use provided commit_id if specified, otherwise use generated one
         if args.reuse_commit_id is not None:
-            reuse_commit_id = args.reuse_commit_id
-            logger.info(f'Using provided commit_id: {reuse_commit_id}')
-        else:
-            reuse_commit_id=None
+            commit_id = args.reuse_commit_id
+            logger.info(f'Using provided commit_id: {commit_id}')
         
         eval_id = f"T{date}_G{commit_id}"
-        print(f"DEBUG: commit_id: {commit_id}, reuse_commit_id: {reuse_commit_id}")
+        # print(f"DEBUG: commit_id: {commit_id}, reuse_commit_id: {reuse_commit_id}")
         pred_root = osp.join(args.work_dir, model_name, eval_id)
         print(f"working dir: {args.work_dir}\npred_root: {pred_root}\n")
         pred_root_meta = osp.join(args.work_dir, model_name)
@@ -274,16 +272,16 @@ def main():
                             else:
                                 prev_result_files = [osp.join(root, result_file_base)]
                             break
-                        elif len(ls(root)) and root != pred_root:
+                        elif len(ls(root)):
                             # Look for pickle files in any previous run directory
                             # If commit_id is provided, prioritize directories containing that commit_id
-                            if reuse_commit_id is not None and reuse_commit_id in root:
-                                print(f"DEBUG: retrieving progress from reuse_commit_id: {reuse_commit_id}")
+                            if args.reuse_commit_id is not None and args.reuse_commit_id in root:
+                                print(f"DEBUG: retrieving progress from reuse_commit_id: {commit_id}")
                                 temp_files = ls(root, match=[dataset_name, '.pkl'])
                                 if len(temp_files):
                                     prev_pkl_file_list.extend(temp_files)
                                     break
-                            elif reuse_commit_id is None:
+                            elif args.reuse_commit_id is None:
                                 # If no specific commit_id provided, look in any directory
                                 temp_files = ls(root, match=[dataset_name, '.pkl'])
                                 if len(temp_files):
