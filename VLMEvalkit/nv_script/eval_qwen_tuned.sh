@@ -55,7 +55,7 @@ source /lustre/fsw/portfolios/nvr/users/ymingli/miniconda3/etc/profile.d/conda.s
 conda activate allanb
 export HF_HUB_CACHE="/lustre/fsw/portfolios/nvr/users/ymingli/cache/huggingface/hub"
 export OPENAI_API_KEY="$OPENAI_API_KEY"
-export THOUGHT_PROCESS=1
+# export THOUGHT_PROCESS=1
 
 cd "/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit"
 
