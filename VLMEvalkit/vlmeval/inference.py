@@ -116,7 +116,7 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         model.set_dump_image(dataset.dump_image)
 
     # for i in tqdm(range(lt)):
-    for i in tqdm(range(min(1, lt))):  # DEBUG: Only process first sample
+    for i in tqdm(range(1)):  # DEBUG: Only process first sample
         idx = data.iloc[i]['index']
         if idx in res:
             continue
@@ -136,7 +136,8 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         if (i + 1) % 10 == 0:
             dump(res, out_file)
 
-    res = {k: res[k] for k in data_indices}
+    # res = {k: res[k] for k in data_indices}
+    res = {k: res[k] for k in data_indices[:1]}
     dump(res, out_file)
     return model
 
