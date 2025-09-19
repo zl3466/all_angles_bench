@@ -3,6 +3,7 @@ import torch.distributed as dist
 from vlmeval.config import supported_VLM
 from vlmeval.utils import track_progress_rich
 from vlmeval.smp import *
+import re
 
 FAIL_MSG = 'Failed to obtain answer via API.'
 
@@ -66,7 +67,7 @@ def infer_data_api(model, work_dir, model_name, dataset, index_set=None, api_npr
     return res
 
 
-def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, api_nproc=4):
+def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, api_nproc=4, thought_process=False):
     dataset_name = dataset.dataset_name
     prev_file = f'{work_dir}/{model_name}_{dataset_name}_PREV.pkl'
     res = load(prev_file) if osp.exists(prev_file) else {}
@@ -120,13 +121,18 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         if idx in res:
             continue
         print(f"data.iloc[i]: {data.iloc[i]}\n")
+        # added thought_process parameter
         if hasattr(model, 'use_custom_prompt') and model.use_custom_prompt(dataset_name):
-            struct = model.build_prompt(data.iloc[i], dataset=dataset_name)
+            struct = model.build_prompt(data.iloc[i], dataset=dataset_name, thought_process=thought_process)
         else:
-            struct = dataset.build_prompt(data.iloc[i])
+            struct = dataset.build_prompt(data.iloc[i], thought_process=thought_process)
         
         response = model.generate(message=struct, dataset=dataset_name)
         torch.cuda.empty_cache()
+        
+        # if using thought process, extract the answer from <answer> </answer> tags
+        if thought_process:
+            response = extract_answer(response)
 
         if verbose:
             print(f"message struct: {struct}\n")
@@ -143,6 +149,10 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
 
 # A wrapper for infer_data, do the pre & post processing
 def infer_data_job(model, work_dir, model_name, dataset, verbose=False, api_nproc=4, ignore_failed=False):
+    if int(os.getenv("THOUGHT_PROCESS", "0")) == 1:
+        thought_process = True
+    else:
+        thought_process = False
     rank, world_size = get_rank_and_world_size()
     dataset_name = dataset.dataset_name
     result_file = osp.join(work_dir, f'{model_name}_{dataset_name}.xlsx')
@@ -163,7 +173,7 @@ def infer_data_job(model, work_dir, model_name, dataset, verbose=False, api_npro
 
     model = infer_data(
         model=model, work_dir=work_dir, model_name=model_name, dataset=dataset,
-        out_file=out_file, verbose=verbose, api_nproc=api_nproc)
+        out_file=out_file, verbose=verbose, api_nproc=api_nproc, thought_process=thought_process)
     if world_size > 1:
         dist.barrier()
 
@@ -185,3 +195,11 @@ def infer_data_job(model, work_dir, model_name, dataset, verbose=False, api_npro
     if world_size > 1:
         dist.barrier()
     return model
+
+
+def extract_answer(text):
+    pattern = r'<answer>\s*(.*?)\s*</answer>'
+    match = re.search(pattern, text, re.DOTALL)
+    if match:
+        return match.group(1).strip()
+    return ""

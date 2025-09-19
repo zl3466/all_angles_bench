@@ -1,5 +1,10 @@
 from __future__ import annotations
+import os
 
+
+mcq_post_prompt="Please think about this multiple choice question as if you were a human pondering deeply. It's encouraged to include self-reflection or verification in the reasoning process. Provide your reasoning between the <think> </think> tags, and give your single letter choice answer between the <answer> </answer> tags."
+yorn_post_prompt="Please think about this question as if you were a human pondering deeply. It's encouraged to include self-reflection or verification in the reasoning process. Provide your reasoning between the <think> </think> tags, and answer yes or no between the <answer> </answer> tags."
+vqa_post_prompt="Please think about this question as if you were a human pondering deeply. It's encouraged to include self-reflection or verification in the reasoning process. Provide your reasoning between the <think> </think> tags, and give your short words or phrases answer between the <answer> </answer> tags."
 
 class Qwen2VLPromptMixin:
     """
@@ -39,21 +44,21 @@ class Qwen2VLPromptMixin:
             return True
         return False
 
-    def build_prompt(self, line, dataset: str) -> list[dict[str, str]]:
+    def build_prompt(self, line, dataset: str, thought_process=False) -> list[dict[str, str]]:
         from vlmeval.dataset import DATASET_TYPE
 
         if dataset in {'MMMU_DEV_VAL', 'MMMU_TEST'}:
-            return self._build_mmmu_prompt(line, dataset)
+            return self._build_mmmu_prompt(line, dataset, thought_process)
         dataset_type = DATASET_TYPE(dataset, default=None)
         if dataset_type == 'MCQ':
-            return self._build_mcq_prompt(line, dataset)
+            return self._build_mcq_prompt(line, dataset, thought_process)
         if dataset_type == 'Y/N':
-            return self._build_yorn_prompt(line, dataset)
+            return self._build_yorn_prompt(line, dataset, thought_process)
         if dataset_type == 'VQA':
-            return self._build_vqa_prompt(line, dataset)
+            return self._build_vqa_prompt(line, dataset, thought_process)
         raise ValueError(f'Unsupported dataset: {dataset}')
 
-    def _build_mmmu_prompt(self, line, dataset: str) -> list[dict[str, str]]:
+    def _build_mmmu_prompt(self, line, dataset: str, thought_process=False) -> list[dict[str, str]]:
         """change the prompt for MMMU dataset: keep all images at beginning."""
 
         import string
@@ -73,7 +78,10 @@ class Qwen2VLPromptMixin:
         prompt += f'Question: {question}\n'
         if len(options):
             prompt += options_prompt
-            prompt += 'Please select the correct answer from the options above. \n'
+            if thought_process:
+                prompt += mcq_post_prompt
+            else:
+                prompt += 'Please select the correct answer from the options above. \n'
         prompt = prompt.rstrip()
         msgs = []
         if isinstance(tgt_path, list):
@@ -83,10 +91,12 @@ class Qwen2VLPromptMixin:
         msgs.append(dict(type='text', value=prompt))
         return msgs
 
-    def _build_mcq_prompt(self, line, dataset: str) -> list[dict[str, str]]:
+    def _build_mcq_prompt(self, line, dataset: str, thought_process=False) -> list[dict[str, str]]:
         """change the prompt for MCQ dataset: use chinese prompt if the question contains chinese characters."""
         MCQ_CN_PROMPT = '请直接回答选项字母。'
         MCQ_EN_PROMPT = 'Please select the correct answer from the options above.'
+        if thought_process:
+            MCQ_EN_PROMPT = mcq_post_prompt
 
         import string
 
@@ -122,9 +132,11 @@ class Qwen2VLPromptMixin:
         msgs.append(dict(type='text', value=prompt))
         return msgs
 
-    def _build_yorn_prompt(self, line, dataset: str) -> list[dict[str, str]]:
+    def _build_yorn_prompt(self, line, dataset: str, thought_process=False) -> list[dict[str, str]]:
         """change the prompt for YORN dataset:"""
         YORN_PROMPT = ' Please answer yes or no.'
+        if thought_process:
+            YORN_PROMPT = yorn_post_prompt
 
         tgt_path = self.dump_image(line, dataset)
         question = line['question']
@@ -138,9 +150,11 @@ class Qwen2VLPromptMixin:
         msgs[-1]['value'] += YORN_PROMPT
         return msgs
 
-    def _build_vqa_prompt(self, line, dataset: str) -> list[dict[str, str]]:
+    def _build_vqa_prompt(self, line, dataset: str, thought_process=False) -> list[dict[str, str]]:
         """change the prompt for VQA dataset:"""
         VQA_PROMPT = '\nPlease try to answer the question with short words or phrases if possible.'
+        if thought_process:
+            VQA_PROMPT = vqa_post_prompt
 
         tgt_path = self.dump_image(line, dataset)
         question = line['question']
