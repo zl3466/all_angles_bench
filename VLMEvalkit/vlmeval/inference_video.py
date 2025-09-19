@@ -57,7 +57,7 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
     samples = list(dataset.videos) if getattr(dataset, 'pack', False) else list(range(len(dataset.data)))
     sample_map = {i: s for i, s in zip(sample_indices, samples)}
 
-    sample_indices_sub = sample_indices[rank::world_size]
+    sample_indices_sub = sample_indices[rank::world_size][:1]  # DEBUG: Only process first sample
     if np.all([idx in res for idx in sample_indices_sub]):
         return model
     sample_indices_subrem = [x for x in sample_indices_sub if x not in res]
@@ -81,7 +81,7 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         return model
 
     assert not getattr(dataset, 'pack', False), 'Current model not supported pack mode!'
-    for i, idx in tqdm(enumerate(sample_indices_subrem[:1])):
+    for i, idx in tqdm(enumerate(sample_indices_subrem)):
         if idx in res:
             continue
         if getattr(model, 'nframe', None) is not None and getattr(model, 'nframe', 0) > 0:

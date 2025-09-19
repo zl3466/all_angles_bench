@@ -49,4 +49,4 @@ export HF_HUB_CACHE="/lustre/fsw/portfolios/nvr/users/ymingli/cache/huggingface/
 
 cd "/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit"
 
-torchrun --nproc-per-node=$NUM_GPUS run.py --config "$CONFIG_FILE" --verbose --work-dir "/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit"
+torchrun --nproc-per-node=$NUM_GPUS run.py --config "$CONFIG_FILE" --verbose --work-dir "/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit/outputs"
