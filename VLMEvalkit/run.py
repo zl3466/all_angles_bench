@@ -148,6 +148,8 @@ You can launch the evaluation by setting either --data and --model or --config.
     parser.add_argument('--reuse', action='store_true')
     # Reuse-aux: if set, when reuse is True, will also reuse the auxiliary evaluation files
     parser.add_argument('--reuse-aux', type=bool, default=True, help='reuse auxiliary evaluation files')
+    # Commit ID: specify a commit ID to reuse results from a specific previous run
+    parser.add_argument('--reuse-commit-id', type=str, default=None, help='specify commit ID to reuse results from a specific previous run')
 
     args = parser.parse_args()
     return args
@@ -196,6 +198,12 @@ def main():
         model = None
         date, commit_id = timestr('day'), githash(digits=8)
         # date, commit_id = timestr('second'), githash(digits=8)
+        
+        # Use provided commit_id if specified, otherwise use generated one
+        if args.reuse_commit_id is not None:
+            reuse_commit_id = args.reuse_commit_id
+            logger.info(f'Using provided commit_id: {reuse_commit_id}')
+        
         eval_id = f"T{date}_G{commit_id}"
 
         pred_root = osp.join(args.work_dir, model_name, eval_id)
@@ -257,17 +265,27 @@ def main():
                     prev_result_files = []
                     prev_pkl_file_list = []
                     for root in prev_pred_roots[::-1]:
+                        print(f"DEBUG: checking root: {root}")
                         if osp.exists(osp.join(root, result_file_base)):
                             if args.reuse_aux:
                                 prev_result_files = fetch_aux_files(osp.join(root, result_file_base))
                             else:
                                 prev_result_files = [osp.join(root, result_file_base)]
                             break
-                        elif commit_id in root and len(ls(root)) and root != pred_root:
-                            temp_files = ls(root, match=[dataset_name, '.pkl'])
-                            if len(temp_files):
-                                prev_pkl_file_list.extend(temp_files)
-                                break
+                        elif len(ls(root)) and root != pred_root:
+                            # Look for pickle files in any previous run directory
+                            # If commit_id is provided, prioritize directories containing that commit_id
+                            if reuse_commit_id is not None and reuse_commit_id in root:
+                                temp_files = ls(root, match=[dataset_name, '.pkl'])
+                                if len(temp_files):
+                                    prev_pkl_file_list.extend(temp_files)
+                                    break
+                            elif reuse_commit_id is None:
+                                # If no specific commit_id provided, look in any directory
+                                temp_files = ls(root, match=[dataset_name, '.pkl'])
+                                if len(temp_files):
+                                    prev_pkl_file_list.extend(temp_files)
+                                    break
                     if not args.reuse:
                         prev_result_files = []
                         prev_pkl_file_list = []

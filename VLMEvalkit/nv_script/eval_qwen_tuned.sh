@@ -21,6 +21,10 @@ while [[ $# -gt 0 ]]; do
             CONFIG_FILE="$2"
             shift 2
             ;;
+        --reuse-commit-id)
+            COMMIT_ID="$2"
+            shift 2
+            ;;
         --openai-key)
             OPENAI_API_KEY="$2"
             shift 2
@@ -55,4 +59,4 @@ export THOUGHT_PROCESS=1
 
 cd "/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit"
 
-torchrun --nproc-per-node=$NUM_GPUS run.py --config "$CONFIG_FILE" --verbose
+torchrun --nproc-per-node=$NUM_GPUS run.py --config "$CONFIG_FILE" --verbose --reuse --reuse-commit-id $COMMIT_ID
