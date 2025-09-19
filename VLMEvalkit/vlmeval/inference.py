@@ -120,7 +120,7 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         idx = data.iloc[i]['index']
         if idx in res:
             continue
-        print(f"data.iloc[i]: {data.iloc[i]}\n")
+        # print(f"data.iloc[i]: {data.iloc[i]}\n")
         # added thought_process parameter
         if hasattr(model, 'use_custom_prompt') and model.use_custom_prompt(dataset_name):
             struct = model.build_prompt(data.iloc[i], dataset=dataset_name, thought_process=thought_process)
@@ -132,10 +132,12 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         
         # if using thought process, extract the answer from <answer> </answer> tags
         if thought_process:
+            print(f"raw response: {response}\n")
             response = extract_answer(response)
+            print(f"extracted answer: {response}\n")
 
         if verbose:
-            print(f"message struct: {struct}\n")
+            # print(f"message struct: {struct}\n")
             print(response, flush=True)
 
         res[idx] = response
