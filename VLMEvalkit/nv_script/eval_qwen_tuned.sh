@@ -21,6 +21,10 @@ while [[ $# -gt 0 ]]; do
             CONFIG_FILE="$2"
             shift 2
             ;;
+        --openai-key)
+            OPENAI_API_KEY="$2"
+            shift 2
+            ;;
         *)
             echo "Unknown option $1"
             echo "Usage: $0 --config CONFIG_FILE"
@@ -46,7 +50,8 @@ export PYTHONPATH="/home/ymingli/.local/lib/python3.10/site-packages:$PYTHONPATH
 source /lustre/fsw/portfolios/nvr/users/ymingli/miniconda3/etc/profile.d/conda.sh
 conda activate allanb
 export HF_HUB_CACHE="/lustre/fsw/portfolios/nvr/users/ymingli/cache/huggingface/hub"
+export OPENAI_API_KEY="$OPENAI_API_KEY"
 
 cd "/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit"
 
-torchrun --nproc-per-node=$NUM_GPUS run.py --config "$CONFIG_FILE" --verbose --work-dir "/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit/outputs"
+torchrun --nproc-per-node=$NUM_GPUS run.py --config "$CONFIG_FILE" --verbose

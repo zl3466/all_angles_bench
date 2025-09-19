@@ -115,8 +115,7 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
     else:
         model.set_dump_image(dataset.dump_image)
 
-    # for i in tqdm(range(lt)):
-    for i in tqdm(range(1)):  # DEBUG: Only process first sample
+    for i in tqdm(range(lt)):
         idx = data.iloc[i]['index']
         if idx in res:
             continue
@@ -136,8 +135,7 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         if (i + 1) % 10 == 0:
             dump(res, out_file)
 
-    # res = {k: res[k] for k in data_indices}
-    res = {k: res[k] for k in data_indices[:1]}
+    res = {k: res[k] for k in data_indices}
     dump(res, out_file)
     return model
 
@@ -174,8 +172,6 @@ def infer_data_job(model, work_dir, model_name, dataset, verbose=False, api_npro
             data_all.update(load(tmpl.format(i)))
 
         data = dataset.data
-        # DEBUG: Only process first sample
-        data = data.iloc[:1].reset_index(drop=True)
         for x in data['index']:
             assert x in data_all
         data['prediction'] = [str(data_all[x]) for x in data['index']]
