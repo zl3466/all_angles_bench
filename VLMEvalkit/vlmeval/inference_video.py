@@ -81,7 +81,7 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         return model
 
     assert not getattr(dataset, 'pack', False), 'Current model not supported pack mode!'
-    for i, idx in tqdm(enumerate(sample_indices_subrem)):
+    for i, idx in tqdm(enumerate(sample_indices_subrem[:1])):
         if idx in res:
             continue
         if getattr(model, 'nframe', None) is not None and getattr(model, 'nframe', 0) > 0:
