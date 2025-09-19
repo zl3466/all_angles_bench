@@ -119,14 +119,10 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         idx = data.iloc[i]['index']
         if idx in res:
             continue
-        print(f"DEBUG: Dataset object: {dataset}")
-        print(f"DEBUG: Dataset class: {dataset.__class__.__name__}")
-        print(f"DEBUG: Dataset name: {dataset_name}")
+        print(f"data.iloc[i]: {data.iloc[i]}\n")
         if hasattr(model, 'use_custom_prompt') and model.use_custom_prompt(dataset_name):
-            print(f"DEBUG: Using model's custom prompt for dataset: {dataset_name}")
             struct = model.build_prompt(data.iloc[i], dataset=dataset_name)
         else:
-            print(f"DEBUG: Using dataset's build_prompt. Dataset class: {dataset.__class__.__name__}, Dataset name: {dataset_name}")
             struct = dataset.build_prompt(data.iloc[i])
         
         response = model.generate(message=struct, dataset=dataset_name)
