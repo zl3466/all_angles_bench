@@ -282,9 +282,6 @@ def main():
                                 print(f"DEBUG: Copied {src} to {tgt}")
                             else:
                                 logger.warning(f'File already exists: {tgt}')
-                                print(f"DEBUG: File already exists: {tgt}")
-                    else:
-                        print("DEBUG: No result files found to reuse")
                         
                     elif len(prev_pkl_file_list):
                         for fname in prev_pkl_file_list:
@@ -294,6 +291,8 @@ def main():
                                 logger.info(f'--reuse is set, will reuse the prediction pickle file {fname}.')
                             else:
                                 logger.warning(f'File already exists: {target_path}')
+                    else:
+                        print("DEBUG: No result files found to reuse")
 
                 if world_size > 1:
                     dist.barrier()
