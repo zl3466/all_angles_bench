@@ -2,9 +2,9 @@ from __future__ import annotations
 import os
 
 
-mcq_post_prompt="Please think about this multiple choice question as if you were a human pondering deeply. It's encouraged to include self-reflection or verification in the reasoning process. Provide your reasoning between the <think> </think> tags, and give your single letter choice answer between the <answer> </answer> tags."
-yorn_post_prompt="Please think about this question as if you were a human pondering deeply. It's encouraged to include self-reflection or verification in the reasoning process. Provide your reasoning between the <think> </think> tags, and answer yes or no between the <answer> </answer> tags."
-vqa_post_prompt="Please think about this question as if you were a human pondering deeply. It's encouraged to include self-reflection or verification in the reasoning process. Provide your reasoning between the <think> </think> tags, and give your short words or phrases answer between the <answer> </answer> tags."
+mcq_post_prompt="Please think about this multiple choice question as if you were a human pondering deeply. It's encouraged to include self-reflection or verification in the reasoning process. Provide your succinct reasoning between the <think> </think> tags, and give your single letter choice answer between the <answer> </answer> tags."
+yorn_post_prompt="Please think about this question as if you were a human pondering deeply. It's encouraged to include self-reflection or verification in the reasoning process. Provide your succinct reasoning between the <think> </think> tags, and answer yes or no between the <answer> </answer> tags."
+vqa_post_prompt="Please think about this question as if you were a human pondering deeply. It's encouraged to include self-reflection or verification in the reasoning process. Provide your succinct reasoning between the <think> </think> tags, and give your short words or phrases answer between the <answer> </answer> tags."
 
 class Qwen2VLPromptMixin:
     """
