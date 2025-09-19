@@ -87,6 +87,9 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         idx = data.iloc[i]['index']
         if idx not in res:
             all_finished = False
+    print(f"DEBUG: Total samples to process: {lt}")
+    print(f"DEBUG: Samples already completed: {len(res)}")
+    print(f"DEBUG: All finished: {all_finished}")
     if all_finished:
         res = {k: res[k] for k in data_indices}
         dump(res, out_file)

@@ -204,8 +204,10 @@ def main():
         os.makedirs(pred_root_meta, exist_ok=True)
 
         prev_pred_roots = ls(osp.join(args.work_dir, model_name), mode='dir')
+        print(f"DEBUG: Found {len(prev_pred_roots)} previous run directories: {prev_pred_roots}")
         if len(prev_pred_roots) and args.reuse:
             prev_pred_roots.sort()
+            print(f"DEBUG: Sorted directories: {prev_pred_roots}")
 
         if not osp.exists(pred_root):
             os.makedirs(pred_root, exist_ok=True)
@@ -270,14 +272,19 @@ def main():
                         prev_result_files = []
                         prev_pkl_file_list = []
                     if len(prev_result_files):
+                        print(f"DEBUG: Found {len(prev_result_files)} result files to reuse: {prev_result_files}")
                         for prev_result_file in prev_result_files:
                             src = prev_result_file
                             tgt = osp.join(pred_root, osp.basename(src))
                             if not osp.exists(tgt):
                                 shutil.copy(src, tgt)
                                 logger.info(f'--reuse is set, will reuse the prediction file {src}.')
+                                print(f"DEBUG: Copied {src} to {tgt}")
                             else:
                                 logger.warning(f'File already exists: {tgt}')
+                                print(f"DEBUG: File already exists: {tgt}")
+                    else:
+                        print("DEBUG: No result files found to reuse")
                         
                     elif len(prev_pkl_file_list):
                         for fname in prev_pkl_file_list:
