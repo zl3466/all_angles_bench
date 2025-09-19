@@ -203,6 +203,8 @@ def main():
         if args.reuse_commit_id is not None:
             reuse_commit_id = args.reuse_commit_id
             logger.info(f'Using provided commit_id: {reuse_commit_id}')
+        else:
+            reuse_commit_id=None
         
         eval_id = f"T{date}_G{commit_id}"
 
@@ -276,6 +278,7 @@ def main():
                             # Look for pickle files in any previous run directory
                             # If commit_id is provided, prioritize directories containing that commit_id
                             if reuse_commit_id is not None and reuse_commit_id in root:
+                                print(f"DEBUG: retrieving progress from reuse_commit_id: {reuse_commit_id}")
                                 temp_files = ls(root, match=[dataset_name, '.pkl'])
                                 if len(temp_files):
                                     prev_pkl_file_list.extend(temp_files)
@@ -286,6 +289,7 @@ def main():
                                 if len(temp_files):
                                     prev_pkl_file_list.extend(temp_files)
                                     break
+
                     if not args.reuse:
                         prev_result_files = []
                         prev_pkl_file_list = []
