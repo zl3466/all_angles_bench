@@ -4,6 +4,7 @@ from vlmeval.config import supported_VLM
 from vlmeval.utils import track_progress_rich
 from vlmeval.smp import *
 import re
+import os
 
 FAIL_MSG = 'Failed to obtain answer via API.'
 
@@ -151,6 +152,7 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
 
 # A wrapper for infer_data, do the pre & post processing
 def infer_data_job(model, work_dir, model_name, dataset, verbose=False, api_nproc=4, ignore_failed=False):
+    print(f'thought process: {os.getenv("THOUGHT_PROCESS", "0")}\n\n')
     if int(os.getenv("THOUGHT_PROCESS", "0")) == 1:
         thought_process = True
     else:
