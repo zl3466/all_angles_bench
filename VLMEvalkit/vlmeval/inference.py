@@ -115,7 +115,8 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
     else:
         model.set_dump_image(dataset.dump_image)
 
-    for i in tqdm(range(lt)):
+    # for i in tqdm(range(lt)):
+    for i in tqdm(range(min(1, lt))):  # DEBUG: Only process first sample
         idx = data.iloc[i]['index']
         if idx in res:
             continue
