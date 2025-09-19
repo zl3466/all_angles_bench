@@ -124,11 +124,12 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
             struct = model.build_prompt(data.iloc[i], dataset=dataset_name)
         else:
             struct = dataset.build_prompt(data.iloc[i])
-
+        
         response = model.generate(message=struct, dataset=dataset_name)
         torch.cuda.empty_cache()
 
         if verbose:
+            print(f"message struct: {struct}\n")
             print(response, flush=True)
 
         res[idx] = response

@@ -194,7 +194,7 @@ class ImageMCQDataset(ImageBaseDataset):
         # prompt = ''
         # prompt += f'Question: {question}\n'
         # prompt += 'Please answer the question, sort the input images both in clockwise order and in counterclockwise order" \n'
-        # print(prompt)
+        print(f"raw prompt: {prompt}\n")
         msgs = []
         # import pdb;pdb.set_trace()
         if isinstance(tgt_path, list):
