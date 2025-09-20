@@ -1,0 +1,115 @@
+
+
+If encounter error "ImportError: /usr/lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.32' not found"
+pip uninstall flash-attn
+pip install flash-attn==2.7.4.post1 --no-build-isolation
+
+conda activate allanb
+Follow hugging face instruction to download and process datasets
+
+# modify dataset path in image_mcq.py
+# note that ./VLMEvalkit/vlmeval/vlm/qwen2_vl/model.py uses the model path to determine whether to load the qwen model as Qwen25 or Qwen2.
+Make sure your model path includes the key word (e.g. '2.5') the script uses for condition check.
+'All_Angles_Bench':(
+    '/lustre/fsw/portfolios/nvr/users/ymingli/datasets/All-Angles-Bench/bench_tsv/all_angles_bench_huggingface.tsv'
+),
+
+# if getting error 'RuntimeError: FlashAttention only support fp16 and bf16 data type'
+modify `MODEL_CLS.from_pretrained` in model.py from torch_dtype=auto to torch_dtype=torch.bfloat16
+
+# create configs for your model ckpts
+
+
+# ================= cu121 image =================
+srun \
+--partition interactive --gpus=1 --cpus-per-task=16 \
+--container-image=/lustre/fsw/portfolios/nvr/users/ymingli/dockers/2304py3.sqsh \
+--container-mounts=/lustre/:/lustre/,/lustre/fsw/portfolios/nvr/users/ymingli/miniconda3:/home/ymingli/miniconda3 \
+--time 240 \
+--account=nvr_av_verifvalid --pty bash
+
+# original
+python run.py --data All_Angles_Bench --model Qwen2.5-VL-3B-Instruct --verbose
+
+# run from config.py
+python run.py --data All_Angles_Bench --model Qwen2.5-VL-7B-Instruct-tuned --verbose
+
+# run from custom config
+python run.py --config ./model_configs/qwen25vl_sft_grpo_temporal.json --verbose --reuse --reuse-commit-id Ga4d61335
+
+
+===================================================================================
+++++++++++++++++++++ 7B base ++++++++++++++++++++++++
+---- Qwen 7B ----
+submit_job --gpu 8 --cpu 64 --nodes 1 \
+--partition=grizzly,polar,polar3,polar4 \
+--account=nvr_av_foundations \
+--image=/lustre/fsw/portfolios/nvr/users/ymingli/dockers/2304py3.sqsh \
+--mounts=/lustre/:/lustre/,/lustre/fsw/portfolios/nvr/users/ymingli/miniconda3:/home/ymingli/miniconda3,/home/ymingli/.local:/home/ymingli/.local,/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/models:/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/models \
+--duration 4 \
+--dependency=singleton \
+--name allanb \
+--logdir /lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/log/all_angles_bench/7B/7B_$(date +%Y%m%d_%H%M%S) \
+--notimestamp \
+--command "bash /lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit/nv_script/eval_qwen_tuned.sh --config ./model_configs/qwen25vl_7b_base.json --reuse-commit-id 00000000"
+
+++++++++++++++++++++ 7B+GRPO ++++++++++++++++++++++++
+---- Qwen 7B+GRPO ----
+submit_job --gpu 8 --cpu 64 --nodes 1 \
+--partition=grizzly,polar,polar3,polar4 \
+--account=nvr_av_foundations \
+--image=/lustre/fsw/portfolios/nvr/users/ymingli/dockers/2304py3.sqsh \
+--mounts=/lustre/:/lustre/,/lustre/fsw/portfolios/nvr/users/ymingli/miniconda3:/home/ymingli/miniconda3,/home/ymingli/.local:/home/ymingli/.local,/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/models:/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/models \
+--duration 4 \
+--dependency=singleton \
+--name allanb \
+--logdir /lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/log/all_angles_bench/7B+GRPO/7B+GRPO_$(date +%Y%m%d_%H%M%S) \
+--notimestamp \
+--command "bash /lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit/nv_script/eval_qwen_tuned.sh --config ./model_configs/qwen25vl_grpo.json --reuse-commit-id 00000000"
+
+===================================================================================
+++++++++++++++++++++ 7B+GRPO+temporal ++++++++++++++++++++++++
+---- Qwen 7B+GRPO+temporal ----
+submit_job --gpu 8 --cpu 64 --nodes 1 \
+--partition=grizzly,polar,polar3,polar4 \
+--account=nvr_av_foundations \
+--image=/lustre/fsw/portfolios/nvr/users/ymingli/dockers/2304py3.sqsh \
+--mounts=/lustre/:/lustre/,/lustre/fsw/portfolios/nvr/users/ymingli/miniconda3:/home/ymingli/miniconda3,/home/ymingli/.local:/home/ymingli/.local,/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/models:/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/models \
+--duration 4 \
+--dependency=singleton \
+--name allanb \
+--logdir /lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/log/all_angles_bench/7B+GRPO+temporal/7B+GRPO+temporal_$(date +%Y%m%d_%H%M%S) \
+--notimestamp \
+--command "bash /lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit/nv_script/eval_qwen_tuned.sh --config ./model_configs/qwen25vl_grpo_temporal.json  --reuse-commit-id 00000000"
+
+===================================================================================
+++++++++++++++++++++ 7B+SFT+GRPO ++++++++++++++++++++++++
+---- Qwen 7B+SFT+GRPO ----
+submit_job --gpu 8 --cpu 64 --nodes 1 \
+--partition=grizzly,polar,polar3,polar4 \
+--account=nvr_av_foundations \
+--image=/lustre/fsw/portfolios/nvr/users/ymingli/dockers/2304py3.sqsh \
+--mounts=/lustre/:/lustre/,/lustre/fsw/portfolios/nvr/users/ymingli/miniconda3:/home/ymingli/miniconda3,/home/ymingli/.local:/home/ymingli/.local,/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/models:/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/models \
+--duration 4 \
+--dependency=singleton \
+--name allanb \
+--logdir /lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/log/all_angles_bench/7B+SFT+GRPO/7B+SFT+GRPO_$(date +%Y%m%d_%H%M%S) \
+--notimestamp \
+--command "bash /lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit/nv_script/eval_qwen_tuned.sh --config ./model_configs/qwen25vl_sft_grpo.json  --reuse-commit-id 00000000"
+
+===================================================================================
+++++++++++++++++++++ 7B+SFT+GRPO+temporal ++++++++++++++++++++++++
+---- Qwen 7B+SFT+GRPO+temporal ----
+submit_job --gpu 8 --cpu 64 --nodes 1 \
+--partition=grizzly,polar,polar3,polar4 \
+--account=nvr_av_foundations \
+--image=/lustre/fsw/portfolios/nvr/users/ymingli/dockers/2304py3.sqsh \
+--mounts=/lustre/:/lustre/,/lustre/fsw/portfolios/nvr/users/ymingli/miniconda3:/home/ymingli/miniconda3,/home/ymingli/.local:/home/ymingli/.local,/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/models:/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/models \
+--duration 4 \
+--dependency=singleton \
+--name allanb \
+--logdir /lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/log/all_angles_bench/7B+SFT+GRPO+temporal/7B+SFT+GRPO+temporal_$(date +%Y%m%d_%H%M%S) \
+--notimestamp \
+--command "bash /lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit/nv_script/eval_qwen_tuned.sh --config ./model_configs/qwen25vl_sft_grpo_temporal.json  --reuse-commit-id 00000000"
+
+
