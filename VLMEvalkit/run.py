@@ -294,23 +294,25 @@ def main():
                     if len(prev_result_files):
                         print(f"DEBUG: Found {len(prev_result_files)} result files to reuse: {prev_result_files}")
                         for prev_result_file in prev_result_files:
-                            src = prev_result_file
-                            tgt = osp.join(pred_root, osp.basename(src))
-                            if not osp.exists(tgt):
-                                shutil.copy(src, tgt)
-                                logger.info(f'--reuse is set, will reuse the prediction file {src}.')
-                                print(f"DEBUG: Copied {src} to {tgt}")
-                            else:
-                                logger.warning(f'File already exists: {tgt}')
+                            if args.reuse_commit_id is not None and args.reuse_commit_id in prev_result_file:
+                                src = prev_result_file
+                                tgt = osp.join(pred_root, osp.basename(src))
+                                if not osp.exists(tgt):
+                                    shutil.copy(src, tgt)
+                                    logger.info(f'--reuse is set, will reuse the prediction file {src}.')
+                                    print(f"DEBUG: Copied {src} to {tgt}")
+                                else:
+                                    logger.warning(f'File already exists: {tgt}')
                         
                     elif len(prev_pkl_file_list):
                         for fname in prev_pkl_file_list:
-                            target_path = osp.join(pred_root, osp.basename(fname))
-                            if not osp.exists(target_path):
-                                shutil.copy(fname, target_path)
-                                logger.info(f'--reuse is set, will reuse the prediction pickle file {fname}.')
-                            else:
-                                logger.warning(f'File already exists: {target_path}')
+                            if args.reuse_commit_id is not None and args.reuse_commit_id in prev_result_file:
+                                target_path = osp.join(pred_root, osp.basename(fname))
+                                if not osp.exists(target_path):
+                                    shutil.copy(fname, target_path)
+                                    logger.info(f'--reuse is set, will reuse the prediction pickle file {fname}.')
+                                else:
+                                    logger.warning(f'File already exists: {target_path}')
                     else:
                         print("DEBUG: No result files found to reuse")
 
