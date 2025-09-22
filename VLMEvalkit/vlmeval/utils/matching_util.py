@@ -1,3 +1,4 @@
+import re
 import string
 import copy as cp
 import os
@@ -74,14 +75,23 @@ def can_infer_text(answer, choices):
 
 def can_infer(answer, choices):
     answer = str(answer)
-    copt = can_infer_option(answer, choices)
-    # return copt if copt else can_infer_text(answer, choices)
-    result = copt if copt else can_infer_text(answer, choices)
-    
     # Debug: Print extraction details
     print(f"[DEBUG] Answer extraction:")
     print(f"  Raw answer: {answer}")
+    if int(os.getenv("THOUGHT_PROCESS", "0")) == 1:
+        answer = extract_answer(answer)
+    copt = can_infer_option(answer, choices)
+    # return copt if copt else can_infer_text(answer, choices)
+    result = copt if copt else can_infer_text(answer, choices)
     # print(f"  Available choices: {choices}")
-    print(f" Final Extracted result: {result}\n")
+    print(f" Final Extracted answer: {answer}\n")
     
     return result
+
+
+def extract_answer(text):
+    pattern = r'<answer>\s*(.*?)\s*</answer>'
+    match = re.search(pattern, text, re.DOTALL)
+    if match:
+        return match.group(1).strip()
+    return text
