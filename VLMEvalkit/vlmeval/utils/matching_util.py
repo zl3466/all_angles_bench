@@ -36,12 +36,12 @@ def can_infer_option(answer, choices):
     count = count_choice(splits, choices)
 
     # Debug: Print detailed extraction process
-    print(f"[DEBUG] Option-based extraction:")
-    print(f"  Original answer: {answer}")
-    print(f"  Cleaned answer: {answer_mod}")
-    print(f"  Word splits: {splits}")
-    print(f"  Choice count: {count}")
-    print(f"  Available choices: {choices}")
+    # print(f"[DEBUG] Option-based extraction:")
+    # print(f"  Original answer: {answer}")
+    # print(f"  Cleaned answer: {answer_mod}")
+    # print(f"  Word splits: {splits}")
+    # print(f"  Choice count: {count}")
+    # print(f"  Available choices: {choices}")
 
     if count == 1:
         for ch in choices:
@@ -50,7 +50,7 @@ def can_infer_option(answer, choices):
                 logger.info(f'A might be a quantifier in the string: {answer}.')
                 return False
             if ch in splits:
-                print(f"[DEBUG] Found choice: {ch}")
+                # print(f"[DEBUG] Found choice: {ch}")
                 return ch
     elif count == 0 and count_choice(splits, {'Z', ''}) == 1:
         return 'Z'
@@ -81,8 +81,7 @@ def can_infer(answer, choices):
     # Debug: Print extraction details
     print(f"[DEBUG] Answer extraction:")
     print(f"  Raw answer: {answer}")
-    print(f"  Available choices: {choices}")
-    print(f"  Extracted result: {result}")
-    print()
+    # print(f"  Available choices: {choices}")
+    print(f" Final Extracted result: {result}\n")
     
     return result

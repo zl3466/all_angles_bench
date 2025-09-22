@@ -210,4 +210,4 @@ def extract_answer(text):
     match = re.search(pattern, text, re.DOTALL)
     if match:
         return match.group(1).strip()
-    return ""
+    return text

@@ -3,7 +3,8 @@
         "MyQwenModel": {
             "class": "Qwen2VLChat",
             "model_path": "Qwen/Qwen2.5-VL-7B-Instruct",
-            "temperature": 1
+            "temperature": 1,
+            "max_new_tokens": 1024
         }
     },
     "data": {
