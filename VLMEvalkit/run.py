@@ -306,7 +306,7 @@ def main():
                         
                     elif len(prev_pkl_file_list):
                         for fname in prev_pkl_file_list:
-                            if args.reuse_commit_id is not None and args.reuse_commit_id in prev_result_file:
+                            if args.reuse_commit_id is not None and args.reuse_commit_id in fname:
                                 target_path = osp.join(pred_root, osp.basename(fname))
                                 if not osp.exists(target_path):
                                     shutil.copy(fname, target_path)
