@@ -124,17 +124,33 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         idx = data.iloc[i]['index']
         if idx in res:
             continue
-        # print(f"data.iloc[i]: {data.iloc[i]}\n")
-        # added thought_process parameter
+        
+        # Simple timing for each sample
+        import time
+        sample_start = time.time()
+        
+        # Time prompt building
+        prompt_start = time.time()
         if hasattr(model, 'use_custom_prompt') and model.use_custom_prompt(dataset_name):
             struct = model.build_prompt(data.iloc[i], dataset=dataset_name, thought_process=thought_process)
         else:
             struct = dataset.build_prompt(data.iloc[i], thought_process=thought_process)
+        prompt_time = time.time() - prompt_start
+        print(f"Prompt built for sample {idx} in {prompt_time:.1f}s")
         
+        # Time model generation
+        gen_start = time.time()
         response = model.generate(message=struct, dataset=dataset_name)
+        gen_time = time.time() - gen_start
+        print(f"Generated response for sample {idx} in {gen_time:.1f}s")
+        
         torch.cuda.empty_cache()
         
-        # if using thought process, extract the answer from <answer> </answer> tags
+        # Print timing for slow samples
+        sample_time = time.time() - sample_start
+        if sample_time > 30:  # Only print if sample takes more than 30 seconds
+            print(f"Sample {idx} took {sample_time:.1f}s total")
+        
         if verbose:
             print(f"raw response: {response}\n")
 
@@ -144,6 +160,7 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
 
     res = {k: res[k] for k in data_indices}
     dump(res, out_file)
+    
     return model
 
 
