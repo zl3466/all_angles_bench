@@ -59,4 +59,4 @@ export THOUGHT_PROCESS=1
 
 cd "/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit"
 
-torchrun --nproc-per-node=$NUM_GPUS run.py --config "$CONFIG_FILE" --reuse --reuse-commit-id $COMMIT_ID --verbose
+torchrun --nproc-per-node=$NUM_GPUS run.py --config "$CONFIG_FILE" --reuse --reuse-commit-id $COMMIT_ID

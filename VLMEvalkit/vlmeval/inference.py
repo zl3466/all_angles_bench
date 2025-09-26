@@ -135,22 +135,22 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
             struct = model.build_prompt(data.iloc[i], dataset=dataset_name, thought_process=thought_process)
         else:
             struct = dataset.build_prompt(data.iloc[i], thought_process=thought_process)
-        prompt_time = time.time() - prompt_start
-        print(f"Prompt built for sample {idx} in {prompt_time:.1f}s")
+        # prompt_time = time.time() - prompt_start
+        # print(f"Prompt built for sample {idx} in {prompt_time:.1f}s")
         
         # Time model generation
         gen_start = time.time()
         response = model.generate(message=struct, dataset=dataset_name)
-        gen_time = time.time() - gen_start
-        print(f"Generated response for sample {idx} in {gen_time:.1f}s")
+        # gen_time = time.time() - gen_start
+        # print(f"Generated response for sample {idx} in {gen_time:.1f}s")
         
         torch.cuda.empty_cache()
         
-        # Print timing for slow samples
-        sample_time = time.time() - sample_start
-        if sample_time > 30:  # Only print if sample takes more than 30 seconds
-            print(f"Sample {idx} took {sample_time:.1f}s total")
-        
+        ## Print timing for slow samples
+        # sample_time = time.time() - sample_start
+        # if sample_time > 30:  # Only print if sample takes more than 30 seconds
+        #     print(f"Sample {idx} took {sample_time:.1f}s total")
+        #
         if verbose:
             print(f"raw response: {response}\n")
 
