@@ -136,12 +136,7 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         
         # if using thought process, extract the answer from <answer> </answer> tags
         if verbose:
-            if thought_process:
-                print(f"raw response: {response}\n")
-                response = extract_answer(response)
-                print(f"extracted answer: {response}\n")
-            else:
-                print(f"raw response: {response}\n")
+            print(f"raw response: {response}\n")
 
         res[idx] = response
         if (i + 1) % 5 == 0:
