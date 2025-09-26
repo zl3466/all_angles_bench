@@ -144,7 +144,7 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
                 print(f"raw response: {response}\n")
 
         res[idx] = response
-        if (i + 1) % 10 == 0:
+        if (i + 1) % 5 == 0:
             dump(res, out_file)
 
     res = {k: res[k] for k in data_indices}

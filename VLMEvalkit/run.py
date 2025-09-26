@@ -191,7 +191,7 @@ def main():
         torch.cuda.set_device(int(local_rank))
         dist.init_process_group(
             backend='nccl',
-            timeout=datetime.timedelta(seconds=int(os.environ.get('DIST_TIMEOUT', 3600)))
+            timeout=datetime.timedelta(seconds=int(os.environ.get('DIST_TIMEOUT', 7200)))  # Increased to 2 hours
         )
 
     for _, model_name in enumerate(args.model):
