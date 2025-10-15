@@ -29,6 +29,10 @@ while [[ $# -gt 0 ]]; do
             OPENAI_API_KEY="$2"
             shift 2
             ;;
+        --mode)
+            mode="$2"
+            shift 2
+            ;;
         *)
             echo "Unknown option $1"
             echo "Usage: $0 --config CONFIG_FILE"
@@ -56,6 +60,7 @@ conda activate allanb
 export HF_HUB_CACHE="/lustre/fsw/portfolios/nvr/users/ymingli/cache/huggingface/hub"
 #export OPENAI_API_KEY="$OPENAI_API_KEY"
 export THOUGHT_PROCESS=1
+export MMEVAL_ROOT="./outputs/$mode"
 
 cd "/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/github/all_angles_bench/VLMEvalkit"
 
