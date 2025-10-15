@@ -1,0 +1,19 @@
+{
+    "model": {
+        "7B+grpo": {
+            "class": "Qwen2VLChat",
+            "model_path": "/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/log/VOLM/outdoor/out_gr_20251002_104632/ckpt",
+            "temperature": 0.01,
+            "max_new_tokens": 1024,
+            "top_p": 0.9,
+            "top_k": 1,
+            "repetition_penalty": 1.0
+        }
+    },
+    "data": {
+        "All_Angles_Bench": {
+            "class": "ImageMCQDataset",
+            "dataset": "All_Angles_Bench"
+        }
+    }
+}
