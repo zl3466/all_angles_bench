@@ -76,15 +76,15 @@ def can_infer_text(answer, choices):
 def can_infer(answer, choices):
     answer = str(answer)
     # Debug: Print extraction details
-    print(f"[DEBUG] Answer extraction:")
-    print(f"  Raw answer: {answer}")
+    # print(f"[DEBUG] Answer extraction:")
+    # print(f"  Raw answer: {answer}")
     if int(os.getenv("THOUGHT_PROCESS", "0")) == 1:
         answer = extract_answer(answer)
     copt = can_infer_option(answer, choices)
     # return copt if copt else can_infer_text(answer, choices)
     result = copt if copt else can_infer_text(answer, choices)
     # print(f"  Available choices: {choices}")
-    print(f" Final Extracted answer: {answer}\n")
+    # print(f" Final Extracted answer: {answer}\n")
     
     return result
 
