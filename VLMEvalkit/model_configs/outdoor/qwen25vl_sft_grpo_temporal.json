@@ -2,7 +2,7 @@
     "model": {
         "7B+sft+grpo+temporal": {
             "class": "Qwen2VLChat",
-            "model_path": "/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/log/VOLM/outdoor/out_sft_gr+temporal_20251012_085739/ckpt",
+            "model_path": "/lustre/fsw/portfolios/nvr/users/ymingli/projects/playground/log/VOLM_new/outdoor/out_sft_gr+temporal_1500_20251126_060702/ckpt",
             "temperature": 0.01,
             "max_new_tokens": 1024,
             "top_p": 0.9,
